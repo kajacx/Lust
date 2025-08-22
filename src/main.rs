@@ -1,3 +1,7 @@
+use lalrpop_util::lalrpop_mod;
+
+lalrpop_mod!(luasyn);
+
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
 enum TestResult {
     Pass,
@@ -32,6 +36,16 @@ fn analyze_file(filename: &str) -> TestResult {
     analyze_file_content(&content)
 }
 
-fn analyze_file_content(_content: &str) -> TestResult {
+fn analyze_file_content(content: &str) -> TestResult {
+    let parser = luasyn::TermParser::new();
+    let parsed = match parser.parse(content) {
+        Ok(value) => value,
+        Err(err) => {
+            eprintln!("Error when parsing the input file:");
+            eprintln!("{err:?}");
+            return TestResult::Fail; // TODO:
+        }
+    };
+
     TestResult::Pass
 }
