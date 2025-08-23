@@ -4,22 +4,20 @@ use crate::*;
 grammar;
 
 pub LuaStatements: Vec<LuaStatement> = {
-    <s:Statement> => vec![s],
-    <mut r:LuaStatements> <s:Statement> => {
+    <s:LuaStatement> => vec![s],
+    <mut r:LuaStatements> <s:LuaStatement> => {
         r.push(s);
         r
     },
 }
 
-Statement: LuaStatement = {
+LuaStatement: LuaStatement = {
     "--" <c:SingleLineComment> => LuaStatement::Comment(c),
     "local" <n:VarName> "=" <v:Expression> => LuaStatement::VarDeclaration {
         name: n,
         value: v,
     },
 };
-
-Num: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
 
 VarName: String = <s:r"[a-zA-Z_]\w+"> => s.to_string();
 
@@ -38,4 +36,5 @@ Expression: LuaExpression = {
         let s = &<>[1..<>.len()-1];
         LuaExpression::StringLiteral(s.to_string())
     },
+    r"[0-9]+" => LuaExpression::NumberLiteral(f64::from_str(<>).unwrap()),
 }

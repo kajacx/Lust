@@ -2,27 +2,25 @@ use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(luasyn);
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(PartialEq, PartialOrd, Debug)]
 pub enum LuaStatement {
     Comment(LuaComment),
     VarDeclaration { name: String, value: LuaExpression },
 }
 
-// #[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-// pub struct LuaComment(Vec<LuaCommentToken>);
-
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(PartialEq, PartialOrd, Debug)]
 pub enum LuaComment {
     TypeAnnotation(LustType),
     Text(String),
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(PartialEq, PartialOrd, Debug)]
 pub enum LuaExpression {
     StringLiteral(String),
+    NumberLiteral(f64),
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(PartialEq, PartialOrd, Debug)]
 pub enum LustType {
     Number,
     String,
@@ -36,7 +34,7 @@ enum TestResult {
 }
 
 fn main() {
-    test_it();
+    // test_it();
 
     let path = std::env::args().nth(1).expect("no path given");
 
@@ -76,7 +74,37 @@ fn analyze_file_content(content: &str) -> TestResult {
     };
 
     println!("{statements:?}");
+    analyze_statements(&statements)
+}
+
+fn analyze_statements(statements: &[LuaStatement]) -> TestResult {
+    for slice in statements.windows(2) {
+        if let LuaStatement::Comment(LuaComment::TypeAnnotation(var_type)) = &slice[0] {
+            if let LuaStatement::VarDeclaration {
+                name: var_name,
+                value: val,
+            } = &slice[1]
+            {
+                let val_type = get_type(val);
+                if !can_assign(&val_type, var_type) {
+                    eprintln!("Cannot assign value '{val:?}' of type '{val_type:?}' into the variable '{var_name}' of type '{var_type:?}'.");
+                    return TestResult::Fail;
+                }
+            }
+        }
+    }
     TestResult::Pass
+}
+
+fn get_type(expr: &LuaExpression) -> LustType {
+    match expr {
+        LuaExpression::NumberLiteral(_) => LustType::Number,
+        LuaExpression::StringLiteral(_) => LustType::String,
+    }
+}
+
+fn can_assign(what: &LustType, into_what: &LustType) -> bool {
+    what == into_what
 }
 
 lalrpop_mod!(testsyn);
@@ -97,8 +125,9 @@ pub enum TestType {
     String,
 }
 
+#[allow(dead_code)]
 fn test_it() {
-    let content = std::fs::read_to_string("tests/testsyn.lua").unwrap();
+    let content = std::fs::read_to_string("testsyn.lua").unwrap();
     let parser = testsyn::TestStatementsParser::new();
     let statements = parser.parse(&content).unwrap();
 
