@@ -3,7 +3,15 @@ use crate::*;
 
 grammar;
 
-pub TestStatement: TestStatement = {
+pub TestStatements: Vec<TestStatement> = {
+    <s:TestStatement> => vec![s],
+    <mut r:TestStatements> <s:TestStatement> => {
+        r.push(s);
+        r
+    },
+};
+
+TestStatement: TestStatement = {
     "--" <c:TestComment> => TestStatement::Comment(c),
 };
 

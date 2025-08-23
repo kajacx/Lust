@@ -99,7 +99,11 @@ pub enum TestType {
 
 fn test_it() {
     let content = std::fs::read_to_string("tests/testsyn.lua").unwrap();
-    let parser = testsyn::TestStatementParser::new();
-    let statement = parser.parse(&content).unwrap();
-    println!("{statement:?}");
+    let parser = testsyn::TestStatementsParser::new();
+    let statements = parser.parse(&content).unwrap();
+
+    println!();
+    println!("--- TEST SUCCESS ---");
+    println!("{statements:?}");
+    println!();
 }

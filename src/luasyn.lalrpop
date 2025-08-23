@@ -4,8 +4,8 @@ use crate::*;
 grammar;
 
 pub LuaStatements: Vec<LuaStatement> = {
-    "" => Vec::new(),
-    <mut r:LuaStatements> "\n" <s:Statement> => {
+    <s:Statement> => vec![s],
+    <mut r:LuaStatements> <s:Statement> => {
         r.push(s);
         r
     },
