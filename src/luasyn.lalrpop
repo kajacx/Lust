@@ -3,7 +3,7 @@ use crate::grammar::*;
 
 grammar;
 
-pub LuaStatements: Vec<LuaStatement> = {
+pub LuaStatements: Vec<Spanned<LuaStatement>> = {
     <s:LuaStatement> => vec![s],
     <mut r:LuaStatements> <s:LuaStatement> => {
         r.push(s);
@@ -11,30 +11,35 @@ pub LuaStatements: Vec<LuaStatement> = {
     },
 }
 
-LuaStatement: LuaStatement = {
-    "--" <c:SingleLineComment> => LuaStatement::Comment(c),
-    "local" <n:VarName> "=" <v:Expression> => LuaStatement::VarDeclaration {
+LuaStatement: Spanned<LuaStatement> = {
+    <s:@L> "--" <c:SingleLineComment> => Spanned::new(LuaStatement::Comment(c), s),
+    <s:@L> "local" <n:VarName> "=" <v:LuaExpression> => Spanned::new(LuaStatement::VarDeclaration {
         name: n,
         value: v,
-    },
+    }, s),
 };
 
-VarName: String = <s:r"[a-zA-Z_]\w+"> => s.to_string();
+VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);
 
-SingleLineComment: LuaComment = {
-    "@type" <t:Type> => LuaComment::TypeAnnotation(t),
+SingleLineComment: Spanned<LuaComment> = {
+    <s:@L> "@type" <t:LuaType> => Spanned::new(LuaComment::TypeAnnotation(t), s),
 }
 
-Type: LuaType = {
-    "number" => LuaType::Number,
-    "string" => LuaType::String,
+LuaType: Spanned<LuaType> = {
+    <s:@L> "number" => Spanned::new(LuaType::Number, s),
+    <s:@L> "string" => Spanned::new(LuaType::String, s),
 }
 
-Expression: LuaExpression = {
-    r#""[^"]*""# => {
+LuaExpression: Spanned<LuaExpression> = {
+    <s:@L> <value:r#""[^"]*""#> => {
         // Remove the surrounding quotes
-        let s = &<>[1..<>.len()-1];
-        LuaExpression::StringLiteral(s.to_string())
+        let text = &value[1..value.len()-1];
+        let token = LuaExpression::StringLiteral(Spanned::new(text.to_string(), s));
+        Spanned::new(token, s)
     },
-    r"[0-9]+" => LuaExpression::NumberLiteral(f64::from_str(<>).unwrap()),
+    <s:@L> <value:r"[0-9]+"> => {
+        let value = f64::from_str(value).unwrap();
+        let token = LuaExpression::NumberLiteral(Spanned::new(value, s));
+        Spanned::new(token, s)
+    },
 }
