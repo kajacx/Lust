@@ -23,3 +23,7 @@ impl<T> Spanned<T> {
         }
     }
 }
+
+pub trait SpanIterator {
+    fn list_spans(&mut self, visitor: impl FnMut(&mut Span));
+}
