@@ -1,7 +1,7 @@
 use crate::{
     error::{ErrorLocation, LustAssignmentError, LustError, LustErrorVariant},
+    grammar::{LuaComment, LuaExpression, LuaStatement, LuaType},
     typecheck::ErrorCollector,
-    LuaComment, LuaExpression, LuaStatement, LustType,
 };
 
 pub fn analyze_statements(statements: &[LuaStatement], mut collector: impl ErrorCollector) {
@@ -33,13 +33,13 @@ pub fn analyze_statements(statements: &[LuaStatement], mut collector: impl Error
     }
 }
 
-fn get_type(expr: &LuaExpression) -> LustType {
+fn get_type(expr: &LuaExpression) -> LuaType {
     match expr {
-        LuaExpression::NumberLiteral(_) => LustType::Number,
-        LuaExpression::StringLiteral(_) => LustType::String,
+        LuaExpression::NumberLiteral(_) => LuaType::Number,
+        LuaExpression::StringLiteral(_) => LuaType::String,
     }
 }
 
-fn can_assign(what: &LustType, into_what: &LustType) -> bool {
+fn can_assign(what: &LuaType, into_what: &LuaType) -> bool {
     what == into_what
 }

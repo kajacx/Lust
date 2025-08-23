@@ -1,43 +1,16 @@
 pub mod error;
+pub mod grammar;
 pub mod parser;
 pub mod typecheck;
-
-use lalrpop_util::lalrpop_mod;
 
 use crate::{
     error::LustError,
     typecheck::{TypecheckOutcome, TypecheckResult},
 };
 
-lalrpop_mod!(luasyn);
-
-#[derive(PartialEq, PartialOrd, Debug)]
-pub enum LuaStatement {
-    Comment(LuaComment),
-    VarDeclaration { name: String, value: LuaExpression },
-}
-
-#[derive(PartialEq, PartialOrd, Debug)]
-pub enum LuaComment {
-    TypeAnnotation(LustType),
-    Text(String),
-}
-
-#[derive(PartialEq, PartialOrd, Debug)]
-pub enum LuaExpression {
-    StringLiteral(String),
-    NumberLiteral(f64),
-}
-
-#[derive(PartialEq, PartialOrd, Debug, Clone)]
-pub enum LustType {
-    Number,
-    String,
-}
+lalrpop_util::lalrpop_mod!(luasyn);
 
 fn main() {
-    // test_it();
-
     let path = std::env::args().nth(1).expect("no path given");
 
     let expected = if path.ends_with("_pass.lua") {
@@ -79,34 +52,4 @@ fn analyze_file(filename: &str) -> TypecheckOutcome {
         },
         errors,
     }
-}
-
-lalrpop_mod!(testsyn);
-
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub enum TestStatement {
-    Comment(TestComment),
-}
-
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub enum TestComment {
-    TypeAnnotation(TestType),
-}
-
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub enum TestType {
-    Number,
-    String,
-}
-
-#[allow(dead_code)]
-fn test_it() {
-    let content = std::fs::read_to_string("testsyn.lua").unwrap();
-    let parser = testsyn::TestStatementsParser::new();
-    let statements = parser.parse(&content).unwrap();
-
-    println!();
-    println!("--- TEST SUCCESS ---");
-    println!("{statements:?}");
-    println!();
 }

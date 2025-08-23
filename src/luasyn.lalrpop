@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use crate::*;
+use crate::grammar::*;
 
 grammar;
 
@@ -25,9 +25,9 @@ SingleLineComment: LuaComment = {
     "@type" <t:Type> => LuaComment::TypeAnnotation(t),
 }
 
-Type: LustType = {
-    "number" => LustType::Number,
-    "string" => LustType::String,
+Type: LuaType = {
+    "number" => LuaType::Number,
+    "string" => LuaType::String,
 }
 
 Expression: LuaExpression = {

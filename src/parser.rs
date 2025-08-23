@@ -1,4 +1,4 @@
-use crate::{luasyn, LuaStatement};
+use crate::{grammar::LuaStatement, luasyn};
 
 pub fn parse_file_content(content: &str) -> Vec<LuaStatement> {
     let parser = luasyn::LuaStatementsParser::new();
