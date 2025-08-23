@@ -1,10 +1,10 @@
 use std::fmt::Display;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub struct ErrorLocation {
-    filename: String,
-    line: usize,
-    column: usize,
+    pub filename: String,
+    pub line: usize,
+    pub column: usize,
 }
 
 impl Display for ErrorLocation {

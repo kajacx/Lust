@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 pub use super::*;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub enum LustErrorVariant {
     Assignment(LustAssignmentError),
 }

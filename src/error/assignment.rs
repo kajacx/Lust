@@ -2,12 +2,12 @@ use std::fmt::Display;
 
 use crate::LustType;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub struct LustAssignmentError {
-    var_name: String,
-    var_type: LustType,
-    expression: String,
-    expression_type: LustType,
+    pub var_name: String,
+    pub var_type: LustType,
+    pub expression: String,
+    pub expression_type: LustType,
 }
 
 impl Display for LustAssignmentError {

@@ -8,10 +8,10 @@ pub use assignment::*;
 pub use location::*;
 pub use variant::*;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub struct LustError {
-    location: ErrorLocation,
-    error: LustErrorVariant,
+    pub location: ErrorLocation,
+    pub error: LustErrorVariant,
 }
 
 impl Display for LustError {

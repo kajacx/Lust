@@ -1,6 +1,13 @@
-mod error;
+pub mod error;
+pub mod parser;
+pub mod typecheck;
 
 use lalrpop_util::lalrpop_mod;
+
+use crate::{
+    error::LustError,
+    typecheck::{TypecheckOutcome, TypecheckResult},
+};
 
 lalrpop_mod!(luasyn);
 
@@ -22,17 +29,10 @@ pub enum LuaExpression {
     NumberLiteral(f64),
 }
 
-#[derive(PartialEq, PartialOrd, Debug)]
+#[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum LustType {
     Number,
     String,
-}
-
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-enum TestResult {
-    Pass,
-    Warn,
-    Fail,
 }
 
 fn main() {
@@ -41,71 +41,44 @@ fn main() {
     let path = std::env::args().nth(1).expect("no path given");
 
     let expected = if path.ends_with("_pass.lua") {
-        TestResult::Pass
+        TypecheckResult::Pass
     } else if path.ends_with("_warn.lua") {
-        TestResult::Warn
+        TypecheckResult::Warn
     } else if path.ends_with("_fail.lua") {
-        TestResult::Fail
+        TypecheckResult::Fail
     } else {
         panic!("Unrecognized file name: {path}")
     };
 
-    let actual = analyze_file(&path);
+    let outcome = analyze_file(&path);
+    let result = outcome.result;
 
-    if actual != expected {
-        panic!("Expected result {expected:?} for test {path}, but got {actual:?} instead.")
+    for error in outcome.errors {
+        eprintln!("{error}");
+    }
+
+    if expected != result {
+        panic!("Expected result {expected:?} for test {path}, but got {result:?} instead.")
     } else {
-        println!("Test {path} succeeded with result {actual:?}.")
+        println!("Test {path} succeeded with result {result:?}.")
     }
 }
 
-fn analyze_file(filename: &str) -> TestResult {
+fn analyze_file(filename: &str) -> TypecheckOutcome {
     let content = std::fs::read_to_string(filename).unwrap();
-    analyze_file_content(&content)
-}
+    let statements = crate::parser::parse_file_content(&content);
 
-fn analyze_file_content(content: &str) -> TestResult {
-    let parser = luasyn::LuaStatementsParser::new();
-    let statements = match parser.parse(content) {
-        Ok(value) => value,
-        Err(err) => {
-            eprintln!("Error when parsing the input file:");
-            eprintln!("{err:?}");
-            return TestResult::Fail; // TODO:
-        }
-    };
+    let mut errors: Vec<LustError> = vec![];
+    typecheck::analyze_statements(&statements, |error| errors.push(error));
 
-    println!("{statements:?}");
-    analyze_statements(&statements)
-}
-
-fn analyze_statements(statements: &[LuaStatement]) -> TestResult {
-    for slice in statements.windows(2) {
-        if let LuaStatement::Comment(LuaComment::TypeAnnotation(var_type)) = &slice[0] {
-            if let LuaStatement::VarDeclaration {
-                name: var_name,
-                value: val,
-            } = &slice[1]
-            {
-                let val_type = get_type(val);
-                if !can_assign(&val_type, var_type) {
-                    return TestResult::Fail;
-                }
-            }
-        }
+    TypecheckOutcome {
+        result: if errors.is_empty() {
+            TypecheckResult::Pass
+        } else {
+            TypecheckResult::Fail
+        },
+        errors,
     }
-    TestResult::Pass
-}
-
-fn get_type(expr: &LuaExpression) -> LustType {
-    match expr {
-        LuaExpression::NumberLiteral(_) => LustType::Number,
-        LuaExpression::StringLiteral(_) => LustType::String,
-    }
-}
-
-fn can_assign(what: &LustType, into_what: &LustType) -> bool {
-    what == into_what
 }
 
 lalrpop_mod!(testsyn);
