@@ -1,3 +1,5 @@
+use crate::grammar::LuaStatement;
+
 #[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub struct Spanned<T> {
     pub token: T,
@@ -26,6 +28,15 @@ impl<T> Spanned<T> {
 
 pub trait SpanIterator {
     fn list_spans(&mut self, visitor: impl FnMut(&mut Span));
+}
+
+impl SpanIterator for Vec<Spanned<LuaStatement>> {
+    fn list_spans(&mut self, mut visitor: impl FnMut(&mut Span)) {
+        for statement in self {
+            visitor(&mut statement.span);
+            statement.token.list_spans(&mut visitor);
+        }
+    }
 }
 
 pub struct LineNumbers {
