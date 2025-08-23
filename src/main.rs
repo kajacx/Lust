@@ -1,3 +1,5 @@
+mod error;
+
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(luasyn);
@@ -87,7 +89,6 @@ fn analyze_statements(statements: &[LuaStatement]) -> TestResult {
             {
                 let val_type = get_type(val);
                 if !can_assign(&val_type, var_type) {
-                    eprintln!("Cannot assign value '{val:?}' of type '{val_type:?}' into the variable '{var_name}' of type '{var_type:?}'.");
                     return TestResult::Fail;
                 }
             }
