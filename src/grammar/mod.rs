@@ -1,5 +1,5 @@
-mod spanned;
+mod span;
 mod tokens;
 
-pub use spanned::*;
+pub use span::*;
 pub use tokens::*;

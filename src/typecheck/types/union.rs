@@ -1,6 +1,6 @@
 use super::LustType;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct UnionType {
     pub variants: Vec<LustType>,
 }

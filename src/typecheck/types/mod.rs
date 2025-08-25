@@ -1,12 +1,13 @@
-mod primitive;
 mod union;
 
-pub use primitive::*;
 pub use union::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub enum LustType {
-    Primitive(PrimitiveType),
+    Nil,
+    Boolean,
+    Number,
+    String,
     Union(UnionType),
 }
 

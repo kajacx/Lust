@@ -1,13 +1,13 @@
 use std::fmt::Display;
 
-use crate::grammar::LuaType;
+use crate::typecheck::LustType;
 
 #[derive(PartialEq, Debug)]
 pub struct LustAssignmentError {
     pub var_name: String,
-    pub var_type: LuaType,
+    pub var_type: LustType,
     pub expression: String,
-    pub expression_type: LuaType,
+    pub expression_type: LustType,
 }
 
 impl Display for LustAssignmentError {

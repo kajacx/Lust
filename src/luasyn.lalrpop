@@ -3,7 +3,7 @@ use crate::grammar::*;
 
 grammar;
 
-pub LuaStatements: Vec<Spanned<LuaStatement>> = {
+pub LuaStatements: Vec<LuaStatement> = {
     <s:LuaStatement> => vec![s],
     <mut r:LuaStatements> <s:LuaStatement> => {
         r.push(s);
@@ -11,35 +11,38 @@ pub LuaStatements: Vec<Spanned<LuaStatement>> = {
     },
 }
 
-LuaStatement: Spanned<LuaStatement> = {
-    <s:@L> "--" <c:SingleLineComment> => Spanned::new(LuaStatement::Comment(c), s),
-    <s:@L> "local" <n:VarName> "=" <v:LuaExpression> => Spanned::new(LuaStatement::VarDeclaration {
-        name: n,
-        value: v,
-    }, s),
+LuaStatement: LuaStatement = {
+    <s:@L> "--" <c:SingleLineComment> => LuaStatement::Comment(c),
+    <s:@L> "local" <n:VarName> "=" <v:LuaExpression> => LuaStatement::new_var_assignment(
+        Span::new(s),
+        n,
+        v,
+    ),
 };
 
-VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);
+// VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);
+VarName: String = <t:r"[a-zA-Z_]\w+"> => t.to_string();
 
-SingleLineComment: Spanned<LuaComment> = {
-    <s:@L> "@type" <t:LuaType> => Spanned::new(LuaComment::TypeAnnotation(t), s),
+SingleLineComment: LuaComment = {
+    // <s:@L> "@type" <t:LuaType> => Spanned::new(LuaComment::TypeAnnotation(t), s),
+    "@type" <t:LuaType> => LuaComment::TypeAnnotation(t),
 }
 
-LuaType: Spanned<LuaType> = {
-    <s:@L> "number" => Spanned::new(LuaType::Number, s),
-    <s:@L> "string" => Spanned::new(LuaType::String, s),
+LuaType: LuaType = {
+    <s:@L> "nil" => LuaType::Nil,
+    <s:@L> "boolean" => LuaType::Boolean,
+    <s:@L> "number" => LuaType::Number,
+    <s:@L> "string" => LuaType::String,
 }
 
-LuaExpression: Spanned<LuaExpression> = {
-    <s:@L> <value:r#""[^"]*""#> => {
+LuaExpression: LuaExpression = {
+    <value:r#""[^"]*""#> => {
         // Remove the surrounding quotes
         let text = &value[1..value.len()-1];
-        let token = LuaExpression::StringLiteral(Spanned::new(text.to_string(), s));
-        Spanned::new(token, s)
+        LuaExpression::StringLiteral(text.to_string())
     },
-    <s:@L> <value:r"[0-9]+"> => {
+    <value:r"[0-9]+"> => {
         let value = f64::from_str(value).unwrap();
-        let token = LuaExpression::NumberLiteral(Spanned::new(value, s));
-        Spanned::new(token, s)
+        LuaExpression::NumberLiteral(value)
     },
 }
