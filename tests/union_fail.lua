@@ -2,10 +2,10 @@
 local empty = nil
 
 -- @type boolean | number
-local flag = true
+local flag = true or "Hello"
 
 -- @type nil | string
 local number1 = 15
 
 -- @type number | nil
-local text = "Hello world!"
+local text = nil or "Hello world!"

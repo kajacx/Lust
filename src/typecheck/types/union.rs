@@ -7,6 +7,7 @@ pub struct UnionType {
 
 impl UnionType {
     pub fn new(variants: impl Iterator<Item = LustType>) -> Self {
+        // TODO: do not insert duplicate variants
         let mut flattened_variants = vec![];
         for variant in variants {
             match variant.try_into_union_variants() {

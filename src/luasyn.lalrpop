@@ -44,6 +44,13 @@ LuaSingleType: LuaType = {
 }
 
 LuaExpression: LuaExpression = {
+    LuaSingleExpression => <>,
+    <left:LuaExpression> "or" <right:LuaSingleExpression> => {
+        LuaExpression::new_or(left, right)
+    },
+}
+
+LuaSingleExpression: LuaExpression = {
     // nil / bool / variable
     <v: VarName> => {
         if v == "nil" {

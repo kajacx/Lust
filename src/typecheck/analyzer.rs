@@ -18,7 +18,7 @@ pub fn analyze_statements(statements: &[LuaStatement], mut collector: impl Error
             if !can_assign(&val_type, &var_type) {
                 collector.on_error(LustError {
                     location: ErrorLocation {
-                        filename: "tests/variable_fail.lua".to_string(),
+                        filename: String::new(), // Will be filled in later
                         line: var_assignment.span.line,
                         column: var_assignment.span.column,
                     },
@@ -40,7 +40,12 @@ fn get_type(expr: &LuaExpression) -> LustType {
         LuaExpression::BooleanLiteral(_) => LustType::Boolean,
         LuaExpression::NumberLiteral(_) => LustType::Number,
         LuaExpression::StringLiteral(_) => LustType::String,
-        LuaExpression::VarName(_) => todo!("Expression type"),
+        LuaExpression::VarName(_) => todo!("Variable type"),
+        LuaExpression::OrOperation(or_operation) => {
+            let left_type = get_type(&or_operation.left);
+            let right_type = get_type(&or_operation.right);
+            LustType::new_union([left_type, right_type].into_iter())
+        }
     }
 }
 

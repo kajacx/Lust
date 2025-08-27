@@ -44,6 +44,10 @@ fn analyze_file(filename: &str) -> TypecheckOutcome {
     let mut errors: Vec<LustError> = vec![];
     typecheck::analyze_statements(&statements, |error| errors.push(error));
 
+    for error in &mut errors {
+        error.location.filename = filename.to_string();
+    }
+
     TypecheckOutcome {
         result: if errors.is_empty() {
             TypecheckResult::Pass

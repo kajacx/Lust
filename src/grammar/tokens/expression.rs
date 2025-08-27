@@ -1,3 +1,5 @@
+use crate::grammar::OrOperation;
+
 #[derive(PartialEq, PartialOrd, Debug)]
 pub enum LuaExpression {
     Nil,
@@ -5,6 +7,16 @@ pub enum LuaExpression {
     NumberLiteral(f64),
     StringLiteral(String),
     VarName(String),
+    OrOperation(OrOperation),
+}
+
+impl LuaExpression {
+    pub fn new_or(left: LuaExpression, right: LuaExpression) -> Self {
+        Self::OrOperation(OrOperation {
+            left: Box::new(left),
+            right: Box::new(right),
+        })
+    }
 }
 
 // impl SpanIterator for LuaExpression {

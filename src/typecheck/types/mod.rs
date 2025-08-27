@@ -25,4 +25,13 @@ impl LustType {
             _ => Err(self),
         }
     }
+
+    pub fn new_union(variants: impl Iterator<Item = LustType>) -> Self {
+        let result = UnionType::new(variants);
+        if result.variants.len() == 1 {
+            result.variants.into_iter().next().unwrap()
+        } else {
+            Self::Union(result)
+        }
+    }
 }
