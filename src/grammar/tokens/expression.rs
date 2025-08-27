@@ -4,6 +4,7 @@ pub enum LuaExpression {
     BooleanLiteral(bool),
     NumberLiteral(f64),
     StringLiteral(String),
+    VarName(String),
 }
 
 // impl SpanIterator for LuaExpression {

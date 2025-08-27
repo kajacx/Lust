@@ -21,7 +21,10 @@ LuaStatement: LuaStatement = {
 };
 
 // VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);
-VarName: String = <t:r"[a-zA-Z_]\w+"> => t.to_string();
+VarName: String = {
+    "nil" => "nil".to_string(), // TODO: why??????
+    r"[a-zA-Z_]\w+" => <>.to_string(),
+}
 
 SingleLineComment: LuaComment = {
     // <s:@L> "@type" <t:LuaType> => Spanned::new(LuaComment::TypeAnnotation(t), s),
@@ -36,13 +39,29 @@ LuaType: LuaType = {
 }
 
 LuaExpression: LuaExpression = {
+    // nil / bool / variable
+    <v: VarName> => {
+        if v == "nil" {
+            LuaExpression::Nil
+        } else if v == "true" {
+            LuaExpression::BooleanLiteral(true)
+        } else if v == "false" {
+            LuaExpression::BooleanLiteral(false)
+        } else {
+            LuaExpression::VarName(v)
+        }
+    },
+
+    // number
+    <value:r"[0-9]+"> => {
+        let value = f64::from_str(value).unwrap();
+        LuaExpression::NumberLiteral(value)
+    },
+
+    // string
     <value:r#""[^"]*""#> => {
         // Remove the surrounding quotes
         let text = &value[1..value.len()-1];
         LuaExpression::StringLiteral(text.to_string())
-    },
-    <value:r"[0-9]+"> => {
-        let value = f64::from_str(value).unwrap();
-        LuaExpression::NumberLiteral(value)
     },
 }

@@ -40,6 +40,7 @@ fn get_type(expr: &LuaExpression) -> LustType {
         LuaExpression::BooleanLiteral(_) => LustType::Boolean,
         LuaExpression::NumberLiteral(_) => LustType::Number,
         LuaExpression::StringLiteral(_) => LustType::String,
+        LuaExpression::VarName(_) => todo!("Expression type"),
     }
 }
 
