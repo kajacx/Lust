@@ -23,7 +23,7 @@ LuaStatement: LuaStatement = {
 // VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);
 VarName: String = {
     "nil" => "nil".to_string(), // TODO: why??????
-    r"[a-zA-Z_]\w+" => <>.to_string(),
+    r"[a-zA-Z_]\w*" => <>.to_string(),
 }
 
 SingleLineComment: LuaComment = {
@@ -32,9 +32,14 @@ SingleLineComment: LuaComment = {
 }
 
 LuaType: LuaType = {
+    LuaSingleType => <>,
+    <t1:LuaType> "|" <t2:LuaSingleType> => LuaType::new_union(t1, t2),
+}
+
+LuaSingleType: LuaType = {
     <s:@L> "nil" => LuaType::Nil,
     <s:@L> "boolean" => LuaType::Boolean,
-    <s:@L> "number" => LuaType::Number,
+    <s:@L> "number" => LuaType::Number, // TODO: a variable named 'number' causes an error in the parser
     <s:@L> "string" => LuaType::String,
 }
 

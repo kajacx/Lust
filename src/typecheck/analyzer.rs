@@ -45,5 +45,20 @@ fn get_type(expr: &LuaExpression) -> LustType {
 }
 
 fn can_assign(what: &LustType, into_what: &LustType) -> bool {
+    // "What" is a union type, all variants must be assignable to "into_what"
+    if let Some(what_variants) = what.try_get_union_variants() {
+        return what_variants
+            .iter()
+            .all(|what_variant| can_assign(what_variant, into_what));
+    }
+
+    // "Into what" is a union type, at least one variant must be assignable to from "what"
+    if let Some(into_what_variants) = into_what.try_get_union_variants() {
+        return into_what_variants
+            .iter()
+            .any(|variant| can_assign(what, variant));
+    }
+
+    // Neither are union types, so they must be exactly equal TODO: arrays and tables
     what == into_what
 }

@@ -22,4 +22,9 @@ impl LuaType {
             }
         }
     }
+
+    pub fn new_union(t1: LuaType, t2: LuaType) -> Self {
+        // TODO: flatten nested unions, not needed right now since LustType::Union will do it
+        Self::Union(vec![t1, t2])
+    }
 }
