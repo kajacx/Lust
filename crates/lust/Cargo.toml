@@ -1,0 +1,15 @@
+[package]
+name = "lust"
+description = "CLI tool for static type checking in Lua."
+version.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+lust-lib = { path = "../lust-lib" }
+
+[dev-dependencies]
+pretty_assertions = "1"

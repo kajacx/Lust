@@ -1,10 +1,18 @@
-[package]
-name = "lust"
+[workspace]
+
+members = [
+  "crates/lust-lib",
+  "crates/lust",
+]
+
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
-
-[build-dependencies]
-lalrpop = "0.22.2"
-
-[dependencies]
-lalrpop-util = { version = "0.22.0", features = ["lexer", "unicode"] }
+repository = "https://github.com/kajacx/lust"
+license = "MIT"
+keywords = ["lua", "type-checking"]
+categories = ["development-tools"]
+authors = ["Karel Hrkal <kajacx@gmail.com>"]
+description = "An in-line type checker for Lua"
