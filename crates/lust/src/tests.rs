@@ -1,7 +1,26 @@
+// AUTOMATIC GENERATION START
+
 #[test]
 fn test_union_fail() {
     test_file("tests/union_fail.lua");
 }
+
+#[test]
+fn test_union_pass() {
+    test_file("tests/union_pass.lua");
+}
+
+#[test]
+fn test_variable_fail() {
+    test_file("tests/variable_fail.lua");
+}
+
+#[test]
+fn test_variable_pass() {
+    test_file("tests/variable_pass.lua");
+}
+
+// AUTOMATIC GENERATION END
 
 fn test_file(path: &str) {
     let output = std::process::Command::new("cargo")
