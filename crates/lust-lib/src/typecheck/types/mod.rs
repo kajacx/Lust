@@ -4,6 +4,7 @@ pub use union::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub enum LustType {
+    Any,
     Nil,
     Boolean,
     Number,

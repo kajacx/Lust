@@ -50,6 +50,11 @@ fn get_type(expr: &LuaExpression) -> LustType {
 }
 
 fn can_assign(what: &LustType, into_what: &LustType) -> bool {
+    // "Any" can be assigned to/from anything
+    if (what == &LustType::Any) || (into_what == &LustType::Any) {
+        return true;
+    }
+
     // "What" is a union type, all variants must be assignable to "into_what"
     if let Some(what_variants) = what.try_get_union_variants() {
         return what_variants

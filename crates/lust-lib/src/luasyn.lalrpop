@@ -38,6 +38,7 @@ LuaType: LuaType = {
 }
 
 LuaSingleType: LuaType = {
+    "any" => LuaType::Any,
     <s:@L> "nil" => LuaType::Nil,
     <s:@L> "boolean" => LuaType::Boolean,
     <s:@L> "number" => LuaType::Number, // TODO: a variable named 'number' causes an error in the parser

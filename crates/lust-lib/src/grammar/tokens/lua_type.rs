@@ -2,6 +2,7 @@ use crate::typecheck::{LustType, UnionType};
 
 #[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum LuaType {
+    Any,
     Nil,
     Boolean,
     Number,
@@ -12,6 +13,7 @@ pub enum LuaType {
 impl LuaType {
     pub fn to_lust_type(&self) -> LustType {
         match self {
+            Self::Any => LustType::Any,
             Self::Nil => LustType::Nil,
             Self::Boolean => LustType::Boolean,
             Self::Number => LustType::Number,
