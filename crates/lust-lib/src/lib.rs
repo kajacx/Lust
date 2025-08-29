@@ -18,7 +18,8 @@ pub fn analyze_file(filename: &str) -> TypecheckOutcome {
     let statements = crate::parser::parse_file_content(&content);
 
     let mut errors: Vec<LustError> = vec![];
-    typecheck::analyze_statements(&statements, |error| errors.push(error));
+    let mut analyzer = typecheck::Analyzer::new();
+    analyzer.analyze_statements(&statements, |error| errors.push(error));
 
     for error in &mut errors {
         error.location.filename = filename.to_string();
