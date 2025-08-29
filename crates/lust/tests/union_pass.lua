@@ -1,10 +1,10 @@
--- @type nil | boolean
+-- @type boolean?
 local empty = nil
 
 -- @type boolean | number | string
 local flag = "hello" or true
 
--- @type string | nil | number
+-- @type string | number?
 local value = nil or 456
 
 -- @type nil | string | boolean

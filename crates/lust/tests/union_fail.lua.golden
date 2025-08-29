@@ -1,4 +1,4 @@
 tests/union_fail.lua:2:1: Cannot assign value 'TODO: Nil' of type 'Nil' into the variable 'empty' of type 'Union(UnionType { variants: [Number, Boolean, String] })'.
 tests/union_fail.lua:5:1: Cannot assign value 'TODO: OrOperation(OrOperation { left: BooleanLiteral(true), right: StringLiteral("Hello") })' of type 'Union(UnionType { variants: [Boolean, String] })' into the variable 'flag' of type 'Union(UnionType { variants: [Boolean, Number] })'.
-tests/union_fail.lua:8:1: Cannot assign value 'TODO: NumberLiteral(15.0)' of type 'Number' into the variable 'value' of type 'Union(UnionType { variants: [Nil, String] })'.
-tests/union_fail.lua:11:1: Cannot assign value 'TODO: OrOperation(OrOperation { left: Nil, right: StringLiteral("Hello world!") })' of type 'Union(UnionType { variants: [Nil, String] })' into the variable 'text' of type 'Union(UnionType { variants: [Number, Nil] })'.
+tests/union_fail.lua:8:1: Cannot assign value 'TODO: NumberLiteral(15.0)' of type 'Number' into the variable 'value' of type 'Union(UnionType { variants: [String, Nil] })'.
+tests/union_fail.lua:11:1: Cannot assign value 'TODO: OrOperation(OrOperation { left: Nil, right: StringLiteral("Hello world!") })' of type 'Union(UnionType { variants: [Nil, String] })' into the variable 'text' of type 'Union(UnionType { variants: [Number, Nil, Boolean] })'.

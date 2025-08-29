@@ -34,6 +34,7 @@ SingleLineComment: LuaComment = {
 LuaType: LuaType = {
     LuaSingleType => <>,
     <t1:LuaType> "|" <t2:LuaSingleType> => LuaType::new_union(t1, t2),
+    <t1:LuaType> "?" => LuaType::new_union(t1, LuaType::Nil),
 }
 
 LuaSingleType: LuaType = {
