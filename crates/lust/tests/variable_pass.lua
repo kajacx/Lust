@@ -12,3 +12,6 @@ local text = "Hello world!"
 
 -- @type any
 local anything = 15 or "hello" or true
+
+-- @type string
+local textAgain = text

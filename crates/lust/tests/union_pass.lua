@@ -9,3 +9,6 @@ local value = nil or 456
 
 -- @type nil | string | boolean
 local text = "Hello world!"
+
+-- @type boolean? | string
+local emptyAgain = empty or "text"

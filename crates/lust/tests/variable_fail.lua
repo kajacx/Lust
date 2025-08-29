@@ -9,3 +9,6 @@ local text = "Hello world!"
 
 -- @type string
 local empty = nil
+
+-- @type boolean
+local textAgain = text

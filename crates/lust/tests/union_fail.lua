@@ -9,3 +9,6 @@ local value = 15
 
 -- @type number? | boolean
 local text = nil or "Hello world!"
+
+-- @type number | string
+local valueAgain = value or "text"
