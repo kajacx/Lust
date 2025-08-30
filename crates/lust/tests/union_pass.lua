@@ -1,5 +1,5 @@
 -- @type boolean?
-local empty = nil
+local maybeFlag = nil
 
 -- @type boolean | number | string
 local flag = "hello" or true
@@ -10,5 +10,5 @@ local value = nil or 456
 -- @type nil | string | boolean
 local text = "Hello world!"
 
--- @type boolean? | string
-local emptyAgain = empty or "text"
+-- @type boolean | string
+local emptyAgain = maybeFlag or "text"
