@@ -84,6 +84,11 @@ impl Analyzer {
             LuaExpression::OrOperation(or_operation) => {
                 let left_type = self.get_type(&or_operation.left);
                 let right_type = self.get_type(&or_operation.right);
+
+                // TODO: Abusing variable name, separate type gate from variables somehow
+                let gate = TypeGate::new_truthy("".to_string(), true);
+                let left_type = gate.restrict_type("", &left_type);
+
                 LustType::new_union([left_type, right_type].into_iter())
             }
         }

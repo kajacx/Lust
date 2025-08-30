@@ -30,10 +30,16 @@ impl LustType {
 
     pub fn new_union(variants: impl Iterator<Item = LustType>) -> Self {
         let result = UnionType::new(variants);
-        if result.variants.len() == 1 {
-            result.variants.into_iter().next().unwrap()
-        } else {
-            Self::Union(result)
+
+        // Replace the whole thing with `any` if there is at least one `any`
+        if result.variants.iter().any(|v| *v == Self::Any) {
+            return Self::Any;
+        }
+
+        match result.variants.len() {
+            0 => Self::Never,
+            1 => result.variants.into_iter().next().unwrap(),
+            _ => Self::Union(result),
         }
     }
 

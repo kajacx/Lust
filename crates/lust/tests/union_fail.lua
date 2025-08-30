@@ -11,4 +11,4 @@ local value = 15
 local text = nil or "Hello world!"
 
 -- @type number | string
-local valueAgain = value or "text"
+local valueAgain = flag or "text"
