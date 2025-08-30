@@ -20,6 +20,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            ~/.cargo/registry
+            ~/.cargo/git
             Cargo.lock
             target
           key: ${{ runner.os }}-build-folders-${{ hashFiles('Cargo.toml', 'crates/*/Cargo.toml') }}
