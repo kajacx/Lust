@@ -19,7 +19,7 @@ pub fn analyze_file(filename: &str) -> TypecheckOutcome {
 
     let mut errors: Vec<LustError> = vec![];
     let mut analyzer = typecheck::Analyzer::new();
-    analyzer.analyze_statements(&statements, |error| errors.push(error));
+    analyzer.analyze_statements(&statements, &mut |error| errors.push(error));
 
     for error in &mut errors {
         error.location.filename = filename.to_string();

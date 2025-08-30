@@ -4,6 +4,7 @@ pub use union::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub enum LustType {
+    Never,
     Any,
     Nil,
     Boolean,
@@ -33,6 +34,57 @@ impl LustType {
             result.variants.into_iter().next().unwrap()
         } else {
             Self::Union(result)
+        }
+    }
+
+    pub fn intersect_type(&self, other: &Self) -> Self {
+        if self == other {
+            return self.clone();
+        }
+
+        match (self, other) {
+            (Self::Any, _) => other.clone(),
+            (_, Self::Any) => self.clone(),
+            (Self::Union(u1), Self::Union(u2)) => {
+                let variants = u1
+                    .variants
+                    .iter()
+                    .filter(|t1| u2.variants.iter().any(|t2| *t1 == t2))
+                    .cloned();
+                Self::new_union(variants)
+            }
+            (Self::Union(u), t) | (t, Self::Union(u)) => {
+                if u.variants.iter().any(|variant| variant == t) {
+                    t.clone()
+                } else {
+                    Self::Never
+                }
+            }
+            _ => Self::Never,
+        }
+    }
+
+    pub fn exclude_type(&self, other: &Self) -> Self {
+        if self == other {
+            return Self::Never;
+        }
+
+        match (self, other) {
+            (Self::Any, _) => Self::Any,
+            (_, Self::Any) => self.clone(),
+            (Self::Union(u1), Self::Union(u2)) => {
+                let variants = u1
+                    .variants
+                    .iter()
+                    .filter(|t1| !u2.variants.iter().any(|t2| *t1 == t2))
+                    .cloned();
+                Self::new_union(variants)
+            }
+            (Self::Union(u), t) => {
+                let variants = u.variants.iter().filter(|variant| *variant != t).cloned();
+                Self::new_union(variants)
+            }
+            _ => self.clone(),
         }
     }
 }

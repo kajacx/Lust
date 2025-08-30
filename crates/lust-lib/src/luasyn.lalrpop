@@ -18,6 +18,9 @@ LuaStatement: LuaStatement = {
         n,
         v,
     ),
+    "if" <cond:LuaExpression> "then" <then_branch:LuaStatements> "end" => {
+        LuaStatement::new_if_statement(cond, then_branch)
+    },
 };
 
 // VarName: Spanned<String> = <s:@L> <t:r"[a-zA-Z_]\w+"> => Spanned::new(t.to_string(), s);

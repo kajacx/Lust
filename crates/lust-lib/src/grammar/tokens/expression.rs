@@ -1,4 +1,4 @@
-use crate::grammar::OrOperation;
+use crate::{grammar::OrOperation, typecheck::TypeGate};
 
 #[derive(PartialEq, PartialOrd, Debug)]
 pub enum LuaExpression {
@@ -16,6 +16,13 @@ impl LuaExpression {
             left: Box::new(left),
             right: Box::new(right),
         })
+    }
+
+    pub fn get_top_level_gate(&self) -> Option<TypeGate> {
+        match self {
+            LuaExpression::VarName(name) => Some(TypeGate::new_truthy(name.clone(), true)),
+            _ => None,
+        }
     }
 }
 

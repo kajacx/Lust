@@ -1,6 +1,11 @@
 // AUTOMATIC GENERATION START
 
 #[test]
+fn test_gate_fail() {
+    test_file("tests/gate_fail.lua");
+}
+
+#[test]
 fn test_gate_pass() {
     test_file("tests/gate_pass.lua");
 }

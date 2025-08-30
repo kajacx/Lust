@@ -19,4 +19,8 @@ impl UnionType {
             variants: flattened_variants,
         }
     }
+
+    pub fn contains(&self, t: &LustType) -> bool {
+        self.variants.iter().any(|variant| variant == t)
+    }
 }

@@ -16,6 +16,10 @@ pub enum TypecheckResult {
 
 pub trait ErrorCollector {
     fn on_error(&mut self, error: LustError);
+
+    fn borrow(&mut self) -> impl ErrorCollector {
+        |error| self.on_error(error)
+    }
 }
 
 impl<T: FnMut(LustError)> ErrorCollector for T {
@@ -23,3 +27,10 @@ impl<T: FnMut(LustError)> ErrorCollector for T {
         self(error)
     }
 }
+
+// TODO: Conflicting implementation with &mut FnMut, refactor
+// impl<T: ErrorCollector> ErrorCollector for &mut T {
+//     fn on_error(&mut self, error: crate::error::LustError) {
+//         (*self).on_error(error)
+//     }
+// }

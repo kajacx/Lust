@@ -3,24 +3,26 @@ use std::collections::HashMap;
 use crate::{
     error::{ErrorLocation, LustAssignmentError, LustError, LustErrorVariant},
     grammar::{LuaExpression, LuaStatement},
-    typecheck::{ErrorCollector, LustType},
+    typecheck::{ErrorCollector, LustType, TypeGate},
 };
 
 pub struct Analyzer {
-    variables: HashMap<String, LustType>,
+    pub variables: HashMap<String, LustType>,
+    pub gates: Vec<TypeGate>,
 }
 
 impl Analyzer {
     pub fn new() -> Self {
         Self {
             variables: HashMap::new(),
+            gates: vec![],
         }
     }
 
     pub fn analyze_statements(
         &mut self,
         statements: &[LuaStatement],
-        mut collector: impl ErrorCollector,
+        collector: &mut impl ErrorCollector,
     ) {
         for slice in statements.windows(2) {
             if let (Some(declared_type), Some(var_assignment)) = (
@@ -52,6 +54,24 @@ impl Analyzer {
                 self.variables.insert(var_name.clone(), var_type);
             }
         }
+
+        for statement in statements {
+            match statement {
+                LuaStatement::IfStatement {
+                    condition,
+                    then_branch,
+                } => {
+                    if let Some(gate) = condition.get_top_level_gate() {
+                        self.gates.push(gate);
+                        self.analyze_statements(then_branch, collector);
+                        self.gates.pop();
+                    } else {
+                        self.analyze_statements(then_branch, collector);
+                    }
+                }
+                _ => {}
+            }
+        }
     }
 
     fn get_type(&self, expr: &LuaExpression) -> LustType {
@@ -60,15 +80,27 @@ impl Analyzer {
             LuaExpression::BooleanLiteral(_) => LustType::Boolean,
             LuaExpression::NumberLiteral(_) => LustType::Number,
             LuaExpression::StringLiteral(_) => LustType::String,
-            LuaExpression::VarName(name) => {
-                self.variables.get(name).cloned().unwrap_or(LustType::Any)
-            }
+            LuaExpression::VarName(name) => self.get_variable_type(name),
             LuaExpression::OrOperation(or_operation) => {
                 let left_type = self.get_type(&or_operation.left);
                 let right_type = self.get_type(&or_operation.right);
                 LustType::new_union([left_type, right_type].into_iter())
             }
         }
+    }
+
+    fn get_variable_type(&self, varname: &str) -> LustType {
+        let mut var_type = self
+            .variables
+            .get(varname)
+            .cloned()
+            .unwrap_or(LustType::Any);
+
+        for gate in &self.gates {
+            var_type = gate.restrict_type(varname, &var_type);
+        }
+
+        var_type
     }
 }
 
