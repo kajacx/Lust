@@ -1,0 +1,31 @@
+name: Cargo test
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache build folders
+        uses: actions/cache@v3
+        with:
+          path: |
+            Cargo.lock
+            target
+          key: ${{ runner.os }}-build-folders-${{ hashFiles('Cargo.toml', 'crates/*/Cargo.toml') }}
+          restore-keys: ${{ runner.os }}-build-folders
+
+      - name: Run tests
+        env:
+          RUSTFLAGS: "-D warnings"
+        run: cargo test
