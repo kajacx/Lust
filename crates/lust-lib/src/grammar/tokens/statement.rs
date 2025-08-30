@@ -41,7 +41,7 @@ impl LuaStatement {
 }
 
 impl SpanIterator for LuaStatement {
-    fn list_spans(&mut self, mut visitor: impl FnMut(&mut Span)) {
+    fn list_spans(&mut self, visitor: &mut impl FnMut(&mut Span)) {
         match self {
             Self::Comment(_comment) => {
                 // visitor(&mut comment.span);
@@ -52,10 +52,12 @@ impl SpanIterator for LuaStatement {
             }
             Self::IfStatement {
                 condition: _condition,
-                then_branch: _then_branch,
+                then_branch,
             } => {
                 // condition.list_spans(&mut visitor);
-                // then_branch.list_spans(&mut visitor);
+                then_branch
+                    .iter_mut()
+                    .for_each(|stmt| stmt.list_spans(visitor));
             }
         }
     }

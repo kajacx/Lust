@@ -1,1 +1,1 @@
-tests/gate_fail.lua:0:0: Cannot assign value 'TODO: VarName("value")' of type 'Union(UnionType { variants: [String, Number] })' into the variable 'valueInsideIf' of type 'Number'.
+tests/gate_fail.lua:6:5: Cannot assign value 'TODO: VarName("value")' of type 'Union(UnionType { variants: [String, Number] })' into the variable 'valueInsideIf' of type 'Number'.

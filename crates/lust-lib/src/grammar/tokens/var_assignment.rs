@@ -8,7 +8,7 @@ pub struct LuaVarAssignment {
 }
 
 impl SpanIterator for LuaVarAssignment {
-    fn list_spans(&mut self, mut visitor: impl FnMut(&mut Span)) {
+    fn list_spans(&mut self, visitor: &mut impl FnMut(&mut Span)) {
         visitor(&mut self.span);
         // self.value.list_spans(visitor);
     }

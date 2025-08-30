@@ -7,7 +7,7 @@ pub enum LuaComment {
 }
 
 impl SpanIterator for LuaComment {
-    fn list_spans(&mut self, _visitor: impl FnMut(&mut Span)) {
+    fn list_spans(&mut self, _visitor: &mut impl FnMut(&mut Span)) {
         match self {
             Self::TypeAnnotation(_annotation) => {
                 // visitor(&mut annotation.span);

@@ -16,7 +16,7 @@ impl Span {
 }
 
 pub trait SpanIterator {
-    fn list_spans(&mut self, visitor: impl FnMut(&mut Span));
+    fn list_spans(&mut self, visitor: &mut impl FnMut(&mut Span));
 }
 
 pub struct LineNumbers {

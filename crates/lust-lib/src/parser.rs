@@ -14,7 +14,7 @@ pub fn parse_file_content(content: &str) -> Vec<LuaStatement> {
 
     let line_numbers = LineNumbers::new(content);
     for statement in &mut statements {
-        statement.list_spans(|span| {
+        statement.list_spans(&mut |span| {
             let (line, column) = line_numbers.get_line_and_column(span.offset);
             span.line = line;
             span.column = column;
