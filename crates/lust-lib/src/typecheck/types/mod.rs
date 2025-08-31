@@ -7,7 +7,8 @@ pub enum LustType {
     Never,
     Any,
     Nil,
-    Boolean,
+    True,
+    False,
     Number,
     String,
     Union(UnionType),
@@ -51,6 +52,7 @@ impl LustType {
         match (self, other) {
             (Self::Any, _) => other.clone(),
             (_, Self::Any) => self.clone(),
+            (Self::Never, _) | (_, Self::Never) => Self::Never,
             (Self::Union(u1), Self::Union(u2)) => {
                 let variants = u1
                     .variants
@@ -108,12 +110,11 @@ fn test_intersect_type() {
         String
     );
     assert_eq!(
-        LustType::new_union([Number, String])
-            .intersect_type(&LustType::new_union([String, Boolean])),
+        LustType::new_union([Number, String]).intersect_type(&LustType::new_union([String, False])),
         String
     );
     assert_eq!(
-        LustType::new_union([Number, String]).intersect_type(&LustType::new_union([Boolean, Nil])),
+        LustType::new_union([Number, String]).intersect_type(&LustType::new_union([True, Nil])),
         Never
     );
 }
@@ -130,7 +131,7 @@ fn test_exclude_type() {
         Number
     );
     assert_eq!(
-        LustType::new_union([Number, String]).exclude_type(&LustType::new_union([String, Boolean])),
+        LustType::new_union([Number, String]).exclude_type(&LustType::new_union([String, True])),
         Number
     );
     assert_eq!(

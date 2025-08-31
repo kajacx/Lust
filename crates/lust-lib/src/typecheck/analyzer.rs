@@ -77,7 +77,8 @@ impl Analyzer {
     fn get_type(&self, expr: &LuaExpression) -> LustType {
         match expr {
             LuaExpression::Nil => LustType::Nil,
-            LuaExpression::BooleanLiteral(_) => LustType::Boolean,
+            LuaExpression::BooleanLiteral(true) => LustType::True,
+            LuaExpression::BooleanLiteral(false) => LustType::False,
             LuaExpression::NumberLiteral(_) => LustType::Number,
             LuaExpression::StringLiteral(_) => LustType::String,
             LuaExpression::VarName(name) => self.get_variable_type(name),

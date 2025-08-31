@@ -9,7 +9,7 @@ impl UnionType {
     /** This will:
      * 1) Flatten nested unions
      * 2) Remove duplicate variants
-     * 3) Remove the `Never`
+     * 3) Remove the `Never` type
      *
      * This will NOT:
      * 1) Remove other variants if there is an `Any`

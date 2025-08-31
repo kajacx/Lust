@@ -1,25 +1,27 @@
-use crate::typecheck::LustType;
+use crate::typecheck::{GateRestriction, GateRestrictionKind, LustType};
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TruthyGate {
-    pub varname: String,
-    pub is_truthy: bool,
+    pub restriction: [GateRestriction; 1],
 }
 
 impl TruthyGate {
     pub fn new(varname: String, is_truthy: bool) -> Self {
-        Self { varname, is_truthy }
+        let restriction = GateRestriction {
+            varname,
+            kind: if is_truthy {
+                GateRestrictionKind::Exclude
+            } else {
+                GateRestrictionKind::Intersect
+            },
+            types: vec![LustType::Nil, LustType::False],
+        };
+        Self {
+            restriction: [restriction],
+        }
     }
 
-    pub fn restrict_type(&self, varname: &str, original: &LustType) -> LustType {
-        if varname != self.varname {
-            return original.clone();
-        }
-
-        if self.is_truthy {
-            original.exclude_type(&LustType::Nil)
-        } else {
-            original.intersect_type(&LustType::Nil)
-        }
+    pub fn get_restrictions(&self) -> &[GateRestriction] {
+        &self.restriction
     }
 }

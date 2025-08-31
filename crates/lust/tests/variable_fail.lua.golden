@@ -1,5 +1,5 @@
-tests/variable_fail.lua:2:1: Cannot assign value 'TODO: BooleanLiteral(true)' of type 'Boolean' into the variable 'flag' of type 'Nil'.
-tests/variable_fail.lua:5:1: Cannot assign value 'TODO: NumberLiteral(8.0)' of type 'Number' into the variable 'value' of type 'Boolean'.
+tests/variable_fail.lua:2:1: Cannot assign value 'TODO: BooleanLiteral(true)' of type 'True' into the variable 'flag' of type 'Nil'.
+tests/variable_fail.lua:5:1: Cannot assign value 'TODO: NumberLiteral(8.0)' of type 'Number' into the variable 'value' of type 'Union(UnionType { variants: [True, False] })'.
 tests/variable_fail.lua:8:1: Cannot assign value 'TODO: StringLiteral("Hello world!")' of type 'String' into the variable 'text' of type 'Number'.
 tests/variable_fail.lua:11:1: Cannot assign value 'TODO: Nil' of type 'Nil' into the variable 'empty' of type 'String'.
-tests/variable_fail.lua:14:1: Cannot assign value 'TODO: VarName("text")' of type 'Number' into the variable 'textAgain' of type 'Boolean'.
+tests/variable_fail.lua:14:1: Cannot assign value 'TODO: VarName("text")' of type 'Number' into the variable 'textAgain' of type 'Union(UnionType { variants: [True, False] })'.
