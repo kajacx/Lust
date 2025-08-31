@@ -50,3 +50,29 @@ impl UnionType {
         self.variants.iter().any(|variant| variant == t)
     }
 }
+
+impl std::fmt::Display for UnionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.variants.is_empty() {
+            return write!(f, "never");
+        }
+
+        if self.variants.len() == 1 {
+            return write!(f, "{}", self.variants[0]);
+        }
+
+        let mut strings = self
+            .variants
+            .iter()
+            .map(|v| format!("{}", v))
+            .collect::<Vec<_>>();
+
+        if self.variants.contains(&LustType::True) && self.variants.contains(&LustType::False) {
+            strings
+                .retain(|v| *v != LustType::True.to_string() && *v != LustType::False.to_string());
+            strings.push("boolean".to_string());
+        }
+
+        write!(f, "({})", strings.join(" | "))
+    }
+}

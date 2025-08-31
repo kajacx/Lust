@@ -97,6 +97,21 @@ impl LustType {
     }
 }
 
+impl std::fmt::Display for LustType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Never => write!(f, "never"),
+            Self::Any => write!(f, "any"),
+            Self::Nil => write!(f, "nil"),
+            Self::True => write!(f, "true"),
+            Self::False => write!(f, "false"),
+            Self::Number => write!(f, "number"),
+            Self::String => write!(f, "string"),
+            Self::Union(union_type) => write!(f, "{union_type}"),
+        }
+    }
+}
+
 #[test]
 fn test_intersect_type() {
     use LustType::*;

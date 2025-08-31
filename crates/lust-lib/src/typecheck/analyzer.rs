@@ -45,7 +45,7 @@ impl Analyzer {
                         error: LustErrorVariant::Assignment(LustAssignmentError {
                             var_name: var_name.clone(),
                             var_type: var_type.clone(),
-                            expression: format!("TODO: {val:?}"),
+                            expression: val.clone(),
                             expression_type: val_type,
                         }),
                     })
@@ -130,6 +130,6 @@ fn can_assign(what: &LustType, into_what: &LustType) -> bool {
             .any(|variant| can_assign(what, variant));
     }
 
-    // Neither are union types, so they must be exactly equal TODO: arrays and tables
+    // Neither are union types, so they must be exactly equal
     what == into_what
 }

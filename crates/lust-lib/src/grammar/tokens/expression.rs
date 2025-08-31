@@ -1,6 +1,6 @@
 use crate::{grammar::OrOperation, typecheck::TypeGate};
 
-#[derive(PartialEq, PartialOrd, Debug)]
+#[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum LuaExpression {
     Nil,
     BooleanLiteral(bool),
@@ -22,6 +22,20 @@ impl LuaExpression {
         match self {
             LuaExpression::VarName(name) => Some(TypeGate::new_truthy(name.clone(), true)),
             _ => None,
+        }
+    }
+}
+
+impl std::fmt::Display for LuaExpression {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Nil => write!(f, "nil"),
+            Self::BooleanLiteral(true) => write!(f, "true"),
+            Self::BooleanLiteral(false) => write!(f, "false"),
+            Self::NumberLiteral(number) => write!(f, "{}", number),
+            Self::StringLiteral(text) => write!(f, "\"{}\"", text),
+            Self::VarName(name) => write!(f, "{}", name),
+            Self::OrOperation(op) => write!(f, "({} or {})", op.left, op.right),
         }
     }
 }
