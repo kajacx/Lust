@@ -61,7 +61,7 @@ impl Analyzer {
                     condition,
                     then_branch,
                 } => {
-                    if let Some(gate) = condition.get_top_level_gate() {
+                    if let Some(gate) = condition.get_type_gate() {
                         self.gates.push(gate);
                         self.analyze_statements(then_branch, collector);
                         self.gates.pop();
@@ -85,12 +85,12 @@ impl Analyzer {
             LuaExpression::OrOperation(or_operation) => {
                 let left_type = self.get_type(&or_operation.left);
                 let right_type = self.get_type(&or_operation.right);
-
-                // TODO: Abusing variable name, separate type gate from variables somehow
-                let gate = TypeGate::new_truthy("".to_string(), true);
-                let left_type = gate.restrict_type("", &left_type);
-
-                LustType::new_union([left_type, right_type])
+                LustType::new_union([left_type.intersect_truthy(), right_type])
+            }
+            LuaExpression::AndOperation(and_operation) => {
+                let left_type = self.get_type(&and_operation.left);
+                let right_type = self.get_type(&and_operation.right);
+                LustType::new_union([left_type.exclude_truthy(), right_type])
             }
         }
     }

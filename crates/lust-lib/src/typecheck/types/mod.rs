@@ -95,6 +95,14 @@ impl LustType {
             _ => self.clone(),
         }
     }
+
+    pub fn intersect_truthy(&self) -> Self {
+        self.exclude_type(&Self::False).exclude_type(&Self::Nil)
+    }
+
+    pub fn exclude_truthy(&self) -> Self {
+        self.intersect_type(&Self::new_union([Self::False, Self::Nil]))
+    }
 }
 
 impl std::fmt::Display for LustType {

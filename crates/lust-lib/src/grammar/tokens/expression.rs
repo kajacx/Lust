@@ -1,4 +1,7 @@
-use crate::{grammar::OrOperation, typecheck::TypeGate};
+use crate::{
+    grammar::{AndOperation, OrOperation},
+    typecheck::TypeGate,
+};
 
 #[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum LuaExpression {
@@ -8,6 +11,7 @@ pub enum LuaExpression {
     StringLiteral(String),
     VarName(String),
     OrOperation(OrOperation),
+    AndOperation(AndOperation),
 }
 
 impl LuaExpression {
@@ -18,9 +22,17 @@ impl LuaExpression {
         })
     }
 
-    pub fn get_top_level_gate(&self) -> Option<TypeGate> {
+    pub fn new_and(left: LuaExpression, right: LuaExpression) -> Self {
+        Self::AndOperation(AndOperation {
+            left: Box::new(left),
+            right: Box::new(right),
+        })
+    }
+
+    pub fn get_type_gate(&self) -> Option<TypeGate> {
         match self {
             LuaExpression::VarName(name) => Some(TypeGate::new_truthy(name.clone(), true)),
+            LuaExpression::AndOperation(and_op) => and_op.get_type_gate(),
             _ => None,
         }
     }
@@ -36,6 +48,7 @@ impl std::fmt::Display for LuaExpression {
             Self::StringLiteral(text) => write!(f, "\"{}\"", text),
             Self::VarName(name) => write!(f, "{}", name),
             Self::OrOperation(op) => write!(f, "({} or {})", op.left, op.right),
+            Self::AndOperation(op) => write!(f, "({} and {})", op.left, op.right),
         }
     }
 }

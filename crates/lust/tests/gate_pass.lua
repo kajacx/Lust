@@ -1,10 +1,21 @@
 -- @type number?
-local value = nil
+local maybeValue = nil
 
-if value then
+--@type string?
+local maybeText = "Hello"
+
+if maybeValue then
     -- @type number
-    local valueInsideIf = value
+    local valueInsideIf = maybeValue
 end
 
 -- @type number | string
-local anotherValue = value or "error"
+local anotherValue = maybeValue or "error"
+
+if maybeValue and maybeText then
+    -- @type number
+    local value = maybeValue
+
+    -- @type string
+    local text = maybeText
+end

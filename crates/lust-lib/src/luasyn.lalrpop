@@ -49,13 +49,7 @@ LuaSingleType: LuaType = {
 }
 
 LuaExpression: LuaExpression = {
-    LuaSingleExpression => <>,
-    <left:LuaExpression> "or" <right:LuaSingleExpression> => {
-        LuaExpression::new_or(left, right)
-    },
-}
-
-LuaSingleExpression: LuaExpression = {
+    #[precedence(level="0")]
     // nil / bool / variable
     <v: VarName> => {
         if v == "nil" {
@@ -81,4 +75,17 @@ LuaSingleExpression: LuaExpression = {
         let text = &value[1..value.len()-1];
         LuaExpression::StringLiteral(text.to_string())
     },
+
+    #[precedence(level="1")] #[assoc(side="left")]
+    <left:LuaExpression> "and" <right:LuaExpression> => {
+        LuaExpression::new_and(left, right)
+    },
+
+    #[precedence(level="2")] #[assoc(side="left")]
+    <left:LuaExpression> "or" <right:LuaExpression> => {
+        LuaExpression::new_or(left, right)
+    },
+}
+
+LuaSingleExpression: LuaExpression = {
 }
