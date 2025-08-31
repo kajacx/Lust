@@ -94,3 +94,50 @@ impl LustType {
         }
     }
 }
+
+#[test]
+fn test_intersect_type() {
+    use LustType::*;
+
+    assert_eq!(Number.intersect_type(&Number), Number);
+    assert_eq!(Number.intersect_type(&String), Never);
+    assert_eq!(Any.intersect_type(&Number), Number);
+    assert_eq!(Number.intersect_type(&Any), Number);
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter()).intersect_type(&String),
+        String
+    );
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter())
+            .intersect_type(&LustType::new_union([String, Boolean].into_iter())),
+        String
+    );
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter())
+            .intersect_type(&LustType::new_union([Boolean, Nil].into_iter())),
+        Never
+    );
+}
+
+#[test]
+fn test_exclude_type() {
+    use LustType::*;
+
+    assert_eq!(Number.exclude_type(&Number), Never);
+    assert_eq!(Number.exclude_type(&String), Number);
+    assert_eq!(Any.exclude_type(&Number), Any);
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter()).exclude_type(&String),
+        Number
+    );
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter())
+            .exclude_type(&LustType::new_union([String, Boolean].into_iter())),
+        Number
+    );
+    assert_eq!(
+        LustType::new_union([Number, String].into_iter())
+            .exclude_type(&LustType::new_union([Number, String].into_iter())),
+        Never
+    );
+}
