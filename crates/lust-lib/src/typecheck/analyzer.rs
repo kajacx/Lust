@@ -89,7 +89,7 @@ impl Analyzer {
                 let gate = TypeGate::new_truthy("".to_string(), true);
                 let left_type = gate.restrict_type("", &left_type);
 
-                LustType::new_union([left_type, right_type].into_iter())
+                LustType::new_union([left_type, right_type])
             }
         }
     }

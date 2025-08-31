@@ -15,7 +15,7 @@ impl UnionType {
      * 1) Remove other variants if there is an `Any`
      * 2) Order the variants in any way
      */
-    pub fn new(variants: impl Iterator<Item = LustType>) -> Self {
+    pub fn new(variants: impl IntoIterator<Item = LustType>) -> Self {
         let mut flattened_variants = vec![];
 
         for variant in variants {

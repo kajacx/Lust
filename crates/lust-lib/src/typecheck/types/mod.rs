@@ -28,7 +28,7 @@ impl LustType {
         }
     }
 
-    pub fn new_union(variants: impl Iterator<Item = LustType>) -> Self {
+    pub fn new_union(variants: impl IntoIterator<Item = LustType>) -> Self {
         let result = UnionType::new(variants);
 
         // Replace the whole thing with `any` if there is at least one `any`
@@ -104,17 +104,16 @@ fn test_intersect_type() {
     assert_eq!(Any.intersect_type(&Number), Number);
     assert_eq!(Number.intersect_type(&Any), Number);
     assert_eq!(
-        LustType::new_union([Number, String].into_iter()).intersect_type(&String),
+        LustType::new_union([Number, String]).intersect_type(&String),
         String
     );
     assert_eq!(
-        LustType::new_union([Number, String].into_iter())
-            .intersect_type(&LustType::new_union([String, Boolean].into_iter())),
+        LustType::new_union([Number, String])
+            .intersect_type(&LustType::new_union([String, Boolean])),
         String
     );
     assert_eq!(
-        LustType::new_union([Number, String].into_iter())
-            .intersect_type(&LustType::new_union([Boolean, Nil].into_iter())),
+        LustType::new_union([Number, String]).intersect_type(&LustType::new_union([Boolean, Nil])),
         Never
     );
 }
@@ -127,17 +126,15 @@ fn test_exclude_type() {
     assert_eq!(Number.exclude_type(&String), Number);
     assert_eq!(Any.exclude_type(&Number), Any);
     assert_eq!(
-        LustType::new_union([Number, String].into_iter()).exclude_type(&String),
+        LustType::new_union([Number, String]).exclude_type(&String),
         Number
     );
     assert_eq!(
-        LustType::new_union([Number, String].into_iter())
-            .exclude_type(&LustType::new_union([String, Boolean].into_iter())),
+        LustType::new_union([Number, String]).exclude_type(&LustType::new_union([String, Boolean])),
         Number
     );
     assert_eq!(
-        LustType::new_union([Number, String].into_iter())
-            .exclude_type(&LustType::new_union([Number, String].into_iter())),
+        LustType::new_union([Number, String]).exclude_type(&LustType::new_union([Number, String])),
         Never
     );
 }
