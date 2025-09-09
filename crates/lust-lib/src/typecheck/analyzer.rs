@@ -92,6 +92,7 @@ impl Analyzer {
                 let right_type = self.get_type(&and_operation.right);
                 LustType::new_union([left_type.exclude_truthy(), right_type])
             }
+            LuaExpression::FunctionCall(_) => LustType::String, // TODO: functions
         }
     }
 

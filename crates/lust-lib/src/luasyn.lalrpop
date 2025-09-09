@@ -76,11 +76,18 @@ LuaExpression: LuaExpression = {
         LuaExpression::StringLiteral(text.to_string())
     },
 
+    // function call
+    <name:VarName> "(" <arg:LuaExpression> ")" => {
+        LuaExpression::FunctionCall(FunctionCall::new(name, arg))
+    },
+
+    // and operator
     #[precedence(level="1")] #[assoc(side="left")]
     <left:LuaExpression> "and" <right:LuaExpression> => {
         LuaExpression::new_and(left, right)
     },
 
+    // or operator
     #[precedence(level="2")] #[assoc(side="left")]
     <left:LuaExpression> "or" <right:LuaExpression> => {
         LuaExpression::new_or(left, right)

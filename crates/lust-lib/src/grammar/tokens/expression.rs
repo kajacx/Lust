@@ -1,5 +1,5 @@
 use crate::{
-    grammar::{AndOperation, OrOperation},
+    grammar::{AndOperation, FunctionCall, OrOperation},
     typecheck::TypeGate,
 };
 
@@ -12,6 +12,7 @@ pub enum LuaExpression {
     VarName(String),
     OrOperation(OrOperation),
     AndOperation(AndOperation),
+    FunctionCall(FunctionCall),
 }
 
 impl LuaExpression {
@@ -49,6 +50,7 @@ impl std::fmt::Display for LuaExpression {
             Self::VarName(name) => write!(f, "{}", name),
             Self::OrOperation(op) => write!(f, "({} or {})", op.left, op.right),
             Self::AndOperation(op) => write!(f, "({} and {})", op.left, op.right),
+            Self::FunctionCall(call) => write!(f, "{}", call),
         }
     }
 }

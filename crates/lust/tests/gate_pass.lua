@@ -9,13 +9,18 @@ if maybeValue then
     local valueInsideIf = maybeValue
 end
 
--- @type number | string
-local anotherValue = maybeValue or "error"
-
 if maybeValue and maybeText then
     -- @type number
     local value = maybeValue
 
     -- @type string
     local text = maybeText
+end
+
+-- @type number | string
+local anotherValue = maybeValue or "error"
+
+if type(anotherValue) == "number" then
+    -- @type number
+    local numberValue = anotherValue
 end
