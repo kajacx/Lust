@@ -15,7 +15,7 @@ impl LuaType {
         match self {
             Self::Any => LustType::Any,
             Self::Nil => LustType::Nil,
-            Self::Boolean => LustType::new_union([LustType::True, LustType::False]),
+            Self::Boolean => LustType::boolean(),
             Self::Number => LustType::Number,
             Self::String => LustType::String,
             Self::Union(variants) => {

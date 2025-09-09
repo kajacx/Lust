@@ -81,14 +81,20 @@ LuaExpression: LuaExpression = {
         LuaExpression::FunctionCall(FunctionCall::new(name, arg))
     },
 
-    // and operator
+    // equals operator
     #[precedence(level="1")] #[assoc(side="left")]
+    <left:LuaExpression> "==" <right:LuaExpression> => {
+        LuaExpression::new_equals(left, right)
+    },
+
+    // and operator
+    #[precedence(level="2")] #[assoc(side="left")]
     <left:LuaExpression> "and" <right:LuaExpression> => {
         LuaExpression::new_and(left, right)
     },
 
     // or operator
-    #[precedence(level="2")] #[assoc(side="left")]
+    #[precedence(level="3")] #[assoc(side="left")]
     <left:LuaExpression> "or" <right:LuaExpression> => {
         LuaExpression::new_or(left, right)
     },

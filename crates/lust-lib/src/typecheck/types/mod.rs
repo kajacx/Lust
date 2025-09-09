@@ -44,6 +44,10 @@ impl LustType {
         }
     }
 
+    pub fn boolean() -> Self {
+        Self::new_union([Self::True, Self::False])
+    }
+
     pub fn intersect_type(&self, other: &Self) -> Self {
         if self == other {
             return self.clone();

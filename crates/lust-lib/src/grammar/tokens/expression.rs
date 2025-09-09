@@ -1,5 +1,5 @@
 use crate::{
-    grammar::{AndOperation, FunctionCall, OrOperation},
+    grammar::{AndOperation, EqualsOperation, FunctionCall, OrOperation},
     typecheck::TypeGate,
 };
 
@@ -12,6 +12,7 @@ pub enum LuaExpression {
     VarName(String),
     OrOperation(OrOperation),
     AndOperation(AndOperation),
+    EqualsOperation(EqualsOperation),
     FunctionCall(FunctionCall),
 }
 
@@ -28,6 +29,10 @@ impl LuaExpression {
             left: Box::new(left),
             right: Box::new(right),
         })
+    }
+
+    pub fn new_equals(left: LuaExpression, right: LuaExpression) -> Self {
+        Self::EqualsOperation(EqualsOperation::new(left, right))
     }
 
     pub fn get_type_gate(&self) -> Option<TypeGate> {
@@ -50,6 +55,7 @@ impl std::fmt::Display for LuaExpression {
             Self::VarName(name) => write!(f, "{}", name),
             Self::OrOperation(op) => write!(f, "({} or {})", op.left, op.right),
             Self::AndOperation(op) => write!(f, "({} and {})", op.left, op.right),
+            Self::EqualsOperation(op) => write!(f, "{}", op),
             Self::FunctionCall(call) => write!(f, "{}", call),
         }
     }
