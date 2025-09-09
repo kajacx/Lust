@@ -1,14 +1,14 @@
 use crate::typecheck::LustType;
 
 mod and;
-mod truthy;
+mod single;
 
 pub use and::*;
-pub use truthy::*;
+pub use single::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub enum TypeGate {
-    Truthy(TruthyGate),
+    Single(SingleGate),
     And(AndGate),
 }
 
@@ -34,7 +34,16 @@ impl TypeGate {
     }
 
     pub fn new_truthy(varname: String, truthy: bool) -> Self {
-        Self::Truthy(TruthyGate::new(varname, truthy))
+        let falsy_types = [LustType::Nil, LustType::False];
+        if truthy {
+            Self::Single(SingleGate::new_exclude(varname, falsy_types))
+        } else {
+            Self::Single(SingleGate::new_intersect(varname, falsy_types))
+        }
+    }
+
+    pub fn new_single(varname: String, types: impl IntoIterator<Item = LustType>) -> Self {
+        Self::Single(SingleGate::new_intersect(varname, types))
     }
 
     pub fn new_and(gates: impl IntoIterator<Item = TypeGate>) -> Self {
@@ -43,7 +52,7 @@ impl TypeGate {
 
     pub fn get_restrictions(&self) -> &[GateRestriction] {
         match self {
-            TypeGate::Truthy(gate) => gate.get_restrictions(),
+            TypeGate::Single(gate) => gate.get_restrictions(),
             TypeGate::And(gate) => gate.get_restrictions(),
         }
     }

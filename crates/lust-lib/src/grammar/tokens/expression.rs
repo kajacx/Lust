@@ -39,6 +39,7 @@ impl LuaExpression {
         match self {
             LuaExpression::VarName(name) => Some(TypeGate::new_truthy(name.clone(), true)),
             LuaExpression::AndOperation(and_op) => and_op.get_type_gate(),
+            LuaExpression::EqualsOperation(eq_op) => eq_op.get_type_gate(),
             _ => None,
         }
     }
